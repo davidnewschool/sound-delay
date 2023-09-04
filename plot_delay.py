@@ -143,5 +143,32 @@ ax.set_yticks([])
 ax.set_xlabel('Time [seconds]')
 ax.set_ylabel('Amplitude')
 plt.grid()
+
+# Find the maximum values and their corresponding times for loudness and red_intensity
+max_loudness_index = loudness.argmax()
+max_loudness_time = time_audio[max_loudness_index]
+max_loudness_value = loudness[max_loudness_index]
+
+max_red_intensity_index = red_intensity.argmax()
+max_red_intensity_time = time_video[max_red_intensity_index]
+max_red_intensity_value = red_intensity[max_red_intensity_index]
+
+# Annotate max values for loudness
+ax.annotate(f'Max Loudness at {max_loudness_time:.2f} s', 
+            (max_loudness_time, max_loudness_value),
+            textcoords="offset points",
+            xytext=(0, 10),
+            ha='center',
+            arrowprops=dict(arrowstyle="->"))
+
+# Annotate max values for red_intensity
+ax.annotate(f'Max Red Intensity at {max_red_intensity_time:.2f} s', 
+            (max_red_intensity_time, max_red_intensity_value),
+            textcoords="offset points",
+            xytext=(0, 25),
+            ha='center',
+            arrowprops=dict(arrowstyle="->"))
+
+
 plt.show()
 
