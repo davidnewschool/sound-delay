@@ -3,6 +3,37 @@ import matplotlib.pyplot as plt
 from mosqito.utils import load
 from mosqito.sq_metrics import loudness_zwtv
 import cv2
+try:
+    from moviepy.editor import VideoFileClip
+except RuntimeError:
+    print("Failed to initialize VideoFileClip. Ensure ffmpeg is installed.")
+except ImportError:
+    print("Failed to import VideoFileClip.")
+
+
+
+def extract_audio_from_video(video_path):
+    """Extract audio from the video."""
+    try:
+        # Check if VideoFileClip was imported
+        if 'VideoFileClip' not in globals():
+            raise RuntimeError("VideoFileClip is not imported. Ensure ffmpeg is installed and moviepy is imported successfully. You can still continue with providing your own soundfile as .wav")
+        
+        # Replace .mp4 with .wav (super simple)
+        audio_path = video_path[:-3] + 'wav'
+
+        video = VideoFileClip(video_path)
+        audio = video.audio
+        audio.write_audiofile(audio_path, codec='pcm_s16le')
+        audio.close()
+        
+        print("Audio extracted successfully!")
+        return audio_path
+    except Exception as e:
+        print(f"Error encountered during audio extraction: {e}")
+        return None
+
+
 
 # Get input file paths
 audio_path = input('Enter path of audio file: ')
