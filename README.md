@@ -10,9 +10,7 @@
 
 Note: the example video in these instructions is contained in the ```example/``` sub-directory.
 
-
-https://github.com/davidnewschool/sound-delay/assets/125666415/e5f7868a-5143-4435-9124-167f86b62e27
-
+https://github.com/davidnewschool/sound-delay/assets/125666415/05fd6358-642a-4833-ae3b-7f83175ab1d2
 
 First, install the required libraries:
 
