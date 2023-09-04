@@ -36,8 +36,31 @@ def extract_audio_from_video(video_path):
 
 
 # Get input file paths
-audio_path = input('Enter path of audio file: ')
-video_path = input('Enter path of video file: ')
+while True:
+    video_path = input('Enter path of video file: ')
+
+    try:
+        with open(video_path, 'rb') as f:  # 'rb' mode is for reading binary files
+            print("Video found!")
+            break  # Exit the loop once a valid video path is provided
+    except FileNotFoundError:
+        print("Video not found. Please check the path and try again.")
+
+
+# If audio extraction fails, ask for audio path
+audio_path = extract_audio_from_video(video_path)
+if not audio_path:
+    while True:
+        audio_path = input('Enter path of audio file: ')
+
+        try:
+            with open(audio_path, 'rb') as f:  # 'rb' mode is for reading binary files
+                print("Audio found!")
+                break  # Exit the loop once a valid audio path is provided
+        except FileNotFoundError:
+            print("Audio not found. Please check the path and try again.")
+    
+
 
 #
 # Process Audio
