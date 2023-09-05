@@ -169,9 +169,9 @@ ax.annotate(f'Max Red Intensity at {max_red_intensity_time:.2f} s',
             ha='center',
             arrowprops=dict(arrowstyle="->"))
 
-
-plt.show()
-
 # Save the plot to the same path/name as the input video
 output_image_path = video_path[:-3] + 'png'
 plt.savefig(output_image_path)
+
+# show the plot
+plt.show()
