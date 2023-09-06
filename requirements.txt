@@ -2,3 +2,4 @@ numpy
 matplotlib
 mosqito
 opencv-python-headless
+moviepy
