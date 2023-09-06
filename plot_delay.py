@@ -1,13 +1,66 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from mosqito.utils import load
 from mosqito.sq_metrics import loudness_zwtv
 import cv2
+try: 
+    from moviepy.editor import VideoFileClip
+except:
+    pass
 
+def extract_audio_from_video(video_path):
+    """Extract audio from the video."""
+    try:
+        # Check if VideoFileClip was imported
+        if 'VideoFileClip' not in globals():
+            print("Warning: ffmpeg and moviepy must be installed to automatically extract audio.")
+            return None
+        
+        # Replace file extension with .wav
+        audio_path = os.path.splitext(video_path)[0] + '.wav'
+
+        # Extract audio
+        video = VideoFileClip(video_path)
+        audio = video.audio
+        audio.write_audiofile(audio_path, codec='pcm_s16le')
+        audio.close()
+        
+        print("Audio extracted successfully!")
+        return audio_path
+    except Exception as e:
+        print(f"Error encountered during audio extraction: {e}")
+        return None
+
+#
+# Get User Input
+#
+    
 # Get input file paths
-audio_path = input('Enter path of audio file: ')
-video_path = input('Enter path of video file: ')
+while True:
+    video_path = input('Enter path of video file: ')
 
+    try:
+        with open(video_path, 'rb') as f:  # 'rb' mode is for reading binary files
+            print("Video found!")
+            break  # Exit the loop once a valid video path is provided
+    except FileNotFoundError:
+        print("Video not found. Please check the path and try again.")
+
+# If audio extraction fails, ask for audio path
+audio_path = extract_audio_from_video(video_path)
+if not audio_path:
+    print('You can still provide your own manually extracted audio file in .wav format.')
+    while True:
+        audio_path = input('Enter path of audio file: ')
+
+        try:
+            with open(audio_path, 'rb') as f:  # 'rb' mode is for reading binary files
+                print("Audio found!")
+                break  # Exit the loop once a valid audio path is provided
+        except FileNotFoundError:
+            print("Audio not found. Please check the path and try again.")
+    
 #
 # Process Audio
 #
@@ -89,5 +142,10 @@ ax.set_yticks([])
 ax.set_xlabel('Time [seconds]')
 ax.set_ylabel('Amplitude')
 plt.grid()
-plt.show()
 
+# Save the plot to the same path/name as the input video
+output_image_path = os.path.splitext(video_path)[0] + '.png'
+plt.savefig(output_image_path)
+
+# show the plot
+plt.show()

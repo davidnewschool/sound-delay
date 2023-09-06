@@ -16,15 +16,15 @@ First, install the required libraries:
 
 ```pip install -r requirements.txt```
 
-Download the video you wish to process, and the extract the audio into a separate ```.wav``` file in that same directory. This can be done easily with a free application like Audacity: 
+Next, download the video you wish to process. If you have the ffmpeg library installed, then the audio can be extracted automatically by the code. If not, you need to manually extract the audio into a separate ```.wav``` file. This can be done easily with a free application like Audacity: 
 
 ![sound-delay](images/audacity.png)
 
-Now, run the plotting script with the following command:
+Now run the plotting script with the following command:
 
 ```python plot_delay.py```
 
-Enter the paths of the audio (.wav) and video files into the prompts and press enter. Note, the audio can take a while to process, so it's recommended that you first crop your video to the relevant segment to minimize this processing time. 
+Enter the path of the video file (and the audio file if manually extracted) into the prompt and press enter. Note, the audio can take a while to process, so it's recommended that you first crop your video to the relevant segment to minimize this processing time. 
 
 ![sound-delay](images/prompt1.png)
 
