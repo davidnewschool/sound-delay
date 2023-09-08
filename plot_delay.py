@@ -111,6 +111,9 @@ while cap.isOpened():
 cap.release()
 cv2.destroyAllWindows()
 
+# Create time axis for video based on frame rate
+time_video = 0.04*np.linspace(0., nframes, nframes, endpoint=False)
+
 #
 # Plot signals
 #
@@ -126,9 +129,6 @@ time_max = time_audio[-1]
 # Get min and max of amplitude axis
 amp_min = np.min(red_intensity) - 0.1*( np.max(red_intensity) - np.min(red_intensity) )
 amp_max = np.max(red_intensity) + 0.1*( np.max(red_intensity) - np.min(red_intensity) )
-
-# Create time axis variable for video matching audio time axis
-time_video = np.linspace(time_min, time_max, len(red_intensity))
 
 # Plot
 fig = plt.figure()
