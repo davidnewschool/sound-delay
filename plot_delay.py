@@ -11,6 +11,13 @@ try:
 except:
     pass  # If there's an error importing VideoFileClip, it will be handled later in the code.
 
+#For using the variables global
+loudness = None
+time_audio = None
+red_intensity = None
+time_video = None
+frame_rate = None
+
 def extract_audio_from_video(video_path):
     """Extract audio from the video."""
     try:
@@ -71,6 +78,7 @@ def process_audio(audio_path):
     return loudness, time_audio
 
 def process_video(video_path):
+    global frame_rate
     """Extract the red channel intensity over time from the given video file."""
     print('Processing video...')
     cap = cv2.VideoCapture(video_path)
@@ -131,6 +139,7 @@ def plot_signals(loudness, time_audio, red_intensity, time_video, video_path):
     plt.show()
 
 def main(video_path=None, audio_path=None):
+    global loudness, time_audio, red_intensity, time_video
     # If video_path is not given as argument, ask the user
     if not video_path:
         video_path = get_video_path()
