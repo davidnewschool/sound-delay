@@ -109,22 +109,22 @@ def process_video(video_path):
 def plot_signals(loudness, time_audio, red_intensity, time_video, video_path):
     """Plot the audio and video signals."""
     # Rescale red intensity amplitude to match audio signal amplitude
-    red_intensity = red_intensity - np.min(red_intensity) + np.min(loudness)
-    red_intensity = red_intensity*np.max(loudness)/np.max(red_intensity)
+    red_intensity_normalized = red_intensity - np.min(red_intensity) + np.min(loudness)
+    red_intensity_normalized = red_intensity_normalized*np.max(loudness)/np.max(red_intensity_normalized)
 
     # Get min and max of time axis
     time_min = time_audio[0]
     time_max = time_audio[-1]
 
     # Get min and max of
-    amp_min = np.min(red_intensity) - 0.1*( np.max(red_intensity) - np.min(red_intensity) )
-    amp_max = np.max(red_intensity) + 0.1*( np.max(red_intensity) - np.min(red_intensity) )
+    amp_min = np.min(red_intensity_normalized) - 0.1*( np.max(red_intensity_normalized) - np.min(red_intensity_normalized) )
+    amp_max = np.max(red_intensity_normalized) + 0.1*( np.max(red_intensity_normalized) - np.min(red_intensity_normalized) )
 
     # Plot
     fig = plt.figure()
     ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
     ax.plot(time_audio, loudness, 'b-')
-    ax.plot(time_video, red_intensity, 'r-')
+    ax.plot(time_video, red_intensity_normalized, 'r-')
     ax.legend(['loudness','red intensity'])
     ax.set_xlim(time_min, time_max)
     ax.set_ylim(amp_min, amp_max)
