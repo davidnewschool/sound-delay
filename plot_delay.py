@@ -99,7 +99,9 @@ def process_video(video_path):
         frame_index += 1
 
     cap.release()
-    cv2.destroyAllWindows()
+    # Commented out cv2.destroyAllWindows() as it's not needed and causes issues in Jupyter notebook.
+    # cv2.destroyAllWindows()
+
 
     time_video = 0.04 * np.linspace(0., nframes, nframes, endpoint=False)
     return red_intensity, time_video
