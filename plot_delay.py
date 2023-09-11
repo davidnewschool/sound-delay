@@ -17,6 +17,7 @@ time_audio = None
 red_intensity = None
 time_video = None
 frame_rate = None
+audio_path = None
 
 def extract_audio_from_video(video_path):
     """Extract audio from the video."""
@@ -52,6 +53,7 @@ def get_video_path():
             print("Video not found. Please check the path and try again.")
 
 def get_audio_path(video_path=None):
+    global audio_path
     """ path for the audio."""
     audio_path = extract_audio_from_video(video_path)
     
