@@ -109,8 +109,8 @@ def plot_signals(loudness, time_audio, red_intensity, time_video, video_path):
     """Plot the audio and video signals."""
     
     # Get axis limits
-    time_min = time_audio[0]
-    time_max = time_audio[-1]
+    time_min = time_video[0]
+    time_max = time_video[-1]
 
     red_min = np.min(red_intensity) - 0.1*( np.max(red_intensity) - np.min(red_intensity) )
     red_max = np.max(red_intensity) + 0.1*( np.max(red_intensity) - np.min(red_intensity) )
@@ -125,25 +125,30 @@ def plot_signals(loudness, time_audio, red_intensity, time_video, video_path):
     # Plot
     fig = plt.figure()
     ax1 = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-    ax2 = ax1.twinx()
-    ax1.plot(time_video, red_intensity, 'r-')    
-    ax2.plot(time_audio, loudness, 'b-')
+    ax2 = ax1.twiny()
+    ax3 = ax1.twinx()
+    ax1.plot(time_video, red_intensity, 'r-')
+    ax2.plot(np.arange(len(time_video))+1., red_intensity, 'r-')
+    ax3.plot(time_audio, loudness, 'b-')
 
-    # Time Axis
+    # Time-Red intensity axis
     ax1.set_xlim(time_min, time_max)
-    ax1.set_xlabel('Time [seconds]')
-    ax1.xaxis.grid(linestyle='--')
-
-    # Red intensity axis
     ax1.set_ylim(red_min, red_max)
-    ax1.tick_params(axis='y', colors='red')    
+    ax1.tick_params(axis='y', colors='red')
+    ax1.set_xlabel('Time [seconds]')
     ax1.set_ylabel('Mean Red Intensity [0-255]', color='red')
 
+    # Frame-Red intensity axis
+    ax2.set_xlim(1., float(len(time_video)))
+    ax2.set_ylim(red_min, red_max)
+    ax2.set_xlabel('Video Frame #')
+    ax2.xaxis.grid(linestyle='--')
+    
     # Loudness axis
-    ax2.set_ylim(loud_min, loud_max)
-    ax2.tick_params(axis='y', colors='blue')
-    ax2.set_ylabel('Loudness [sones]', color='blue')
-
+    ax3.set_ylim(loud_min, loud_max)
+    ax3.tick_params(axis='y', colors='blue')
+    ax3.set_ylabel('Loudness [sones]', color='blue')
+    
     # Save the plot to the same path/name as the input video
     output_image_path = os.path.splitext(video_path)[0] + '.png'
     plt.savefig(output_image_path)
