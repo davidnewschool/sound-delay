@@ -20,8 +20,8 @@ def main(video_path=None, audio_path=None):
     red_intensity, time_video, frame_rate = process_video(video_path)
     
     # Plot the signals
-    plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, video_path)
-#    plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_path, frame_rate)
+#    plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, video_path)
+    plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_path, frame_rate)
 
 if __name__ == "__main__":
     # Assuming first argument is video_path and second is audio_path
