@@ -5,6 +5,8 @@ from mosqito.utils import load
 from mosqito.sq_metrics import loudness_zwtv
 import cv2
 import plotly.graph_objects as go
+import requests
+from IPython.display import display, HTML
 
 try: 
     from moviepy.editor import VideoFileClip
@@ -18,6 +20,23 @@ red_intensity = None
 time_video = None
 frame_rate = None
 audio_path = None
+
+def download_mp4(url=None):
+    """Download mp4 file from URL"""
+
+    # Ask user for the URL
+    if not url:
+        url = input("Please enter the URL of the MP4 file: ")
+
+    # Define a suitable filename based on the URL
+    filename = url.split('/')[-1]  # This will take the last part of the URL as the filename. 
+    
+    response = requests.get(url)
+    with open(filename, 'wb') as f:
+        f.write(response.content)
+        
+    # Display a success message in the notebook
+    display(HTML(f"<span style='color: green;'>File downloaded successfully as <b>{filename}</b></span>"))
 
 def extract_audio_from_video(video_path):
     """Extract audio from the video."""
