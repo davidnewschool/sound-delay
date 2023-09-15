@@ -53,7 +53,6 @@ def get_video_path():
             print("Video not found. Please check the path and try again.")
 
 def get_audio_path(video_path=None):
-    global audio_path
     """ path for the audio."""
     audio_path = extract_audio_from_video(video_path)
     
@@ -80,7 +79,6 @@ def process_audio(audio_path):
     return loudness, time_audio
 
 def process_video(video_path):
-    global frame_rate
     """Extract the red channel intensity over time from the given video file."""
     print('Processing video...')
     cap = cv2.VideoCapture(video_path)
@@ -175,6 +173,7 @@ def main(video_path=None, audio_path=None):
     
     # Plot the signals
     plot_signals(loudness, time_audio, red_intensity, time_video, video_path)
+
 
 if __name__ == "__main__":
     # Assuming first argument is video_path and second is audio_path
