@@ -84,7 +84,6 @@ def get_audio_path(video_path=None):
     audio_path = extract_audio_from_video(video_path)
     
     if audio_path:
-        print("Will use the audio from the extraction of the video!")
         return audio_path
     
     print('You can still provide your own manually extracted audio file in .wav format.')
@@ -130,7 +129,7 @@ def process_video(video_path):
     time_video = (1./frame_rate) * np.linspace(0., nframes, nframes, endpoint=False)
     return red_intensity, time_video, frame_rate
 
-def get_axis_limits(loudness, red_intensity):
+def get_axis_limits(time_video, loudness, red_intensity):
     # Get axis limits
     time_min = time_video[0]
     time_max = time_video[-1]
