@@ -1,5 +1,6 @@
-import sys 
-from sd_lib import get_video_path, get_audio_path, process_audio, process_video, plot_signals
+import sys
+from sd_lib import get_video_path, get_audio_path, process_audio, process_video, plot_signals_matplotlib
+from sd_lib import plot_signals_plotly
 
 def main(video_path=None, audio_path=None):
     global loudness, time_audio, red_intensity, time_video
@@ -16,10 +17,11 @@ def main(video_path=None, audio_path=None):
     loudness, time_audio = process_audio(audio_path)
     
     # Process video and get red intensity values
-    red_intensity, time_video = process_video(video_path)
+    red_intensity, time_video, frame_rate = process_video(video_path)
     
     # Plot the signals
-    plot_signals(loudness, time_audio, red_intensity, time_video, video_path)
+    plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, video_path)
+#    plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_path, frame_rate)
 
 if __name__ == "__main__":
     # Assuming first argument is video_path and second is audio_path
