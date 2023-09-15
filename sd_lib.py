@@ -30,7 +30,7 @@ def download_mp4(url=None):
 
     # Define a suitable filename based on the URL
 #    filename = url.split('/')[-1]  # This will take the last part of the URL as the filename. 
-    filename = video.mp4 # TwitterVideoDownloader.com gives weird, not memorable names so keep simple
+    filename = 'video.mp4' # TwitterVideoDownloader.com gives weird, not memorable names so keep simple
 
     response = requests.get(url)
     with open(filename, 'wb') as f:
