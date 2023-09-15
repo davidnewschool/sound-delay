@@ -21,23 +21,30 @@ time_video = None
 frame_rate = None
 audio_path = None
 
-def download_mp4(url=None):
+def download_mp4(url, filename=None):
     """Download mp4 file from URL"""
 
-    # Ask user for the URL
-    if not url:
-        url = input("Please enter the URL of the MP4 file: ")
-
-    # Define a suitable filename based on the URL
-#    filename = url.split('/')[-1]  # This will take the last part of the URL as the filename. 
-    filename = 'video.mp4' # TwitterVideoDownloader.com gives weird, not memorable names so keep simple
-
-    response = requests.get(url)
+    # Default filename to 'video.mp4'
+    if filename is None:
+        filename = 'video.mp4'
+    
+    # Send HTTP request for file
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            filename = 'video.mp4'
+        else:
+            print(f"Request failed with status code {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None
+        
+    # Write file to disk
     with open(filename, 'wb') as f:
         f.write(response.content)
-        
-    # Display a success message in the notebook
-    display(HTML(f"<span style='color: green;'>File downloaded successfully as <b>{filename}</b></span>"))
+
+    return True
 
 def extract_audio_from_video(video_path):
     """Extract audio from the video."""
@@ -123,9 +130,7 @@ def process_video(video_path):
     time_video = (1./frame_rate) * np.linspace(0., nframes, nframes, endpoint=False)
     return red_intensity, time_video, frame_rate
 
-def plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, video_path):
-    """Plot the audio and video signals with Matplotlib."""
-    
+def get_axis_limits(loudness, red_intensity):
     # Get axis limits
     time_min = time_video[0]
     time_max = time_video[-1]
@@ -142,6 +147,14 @@ def plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, vid
                                   * ( red_max - np.max(red_intensity) ) \
                                   /( np.max(red_intensity) - np.min(red_intensity) )
 
+    return time_min, time_max, red_min, red_max, loud_min, loud_max
+    
+def plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, video_path):
+    """Plot the audio and video signals with Matplotlib."""
+
+    # Get limits of plot axes
+    time_min, time_max, red_min, red_max, loud_min, loud_max = get_axis_limits(loudness, red_intensity)
+    
     # Plot
     fig = plt.figure()
     ax1 = fig.add_axes([0.1, 0.1, 0.8, 0.8])
@@ -177,21 +190,10 @@ def plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, vid
     plt.show()
 
 def plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_path, frame_rate):
-    # Get axis limits
-    time_min = time_video[0]
-    time_max = time_video[-1]
-
-    # Pad top and bottom of figure with 10% of range of signals
-    red_min = np.min(red_intensity) - 0.1*( np.max(red_intensity) - np.min(red_intensity) )
-    red_max = np.max(red_intensity) + 0.1*( np.max(red_intensity) - np.min(red_intensity) )
-
-    # Set loudness axis so that the max and min appear the same as red intensity
-    loud_min = np.min(loudness) - ( np.max(loudness) - np.min(loudness) ) \
-                                  * ( np.min(red_intensity) - red_min ) \
-                                  /( np.max(red_intensity) - np.min(red_intensity) )
-    loud_max = np.max(loudness) + ( np.max(loudness) - np.min(loudness) ) \
-                                  * ( red_max - np.max(red_intensity) ) \
-                                  /( np.max(red_intensity) - np.min(red_intensity) )
+    """Plot the audio and video signals with Plotly."""
+    
+    # Get limits of plot axes
+    time_min, time_max, red_min, red_max, loud_min, loud_max = get_axis_limits(loudness, red_intensity)
     
     # Create a figure
     fig = go.Figure()
@@ -206,13 +208,13 @@ def plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_p
                           range       = [time_min, time_max],
                           rangeslider = dict(visible=True),
                           type        = 'linear'),
-        yaxis  = dict(title       = "Mean Red Intensity [0-255]",
+        yaxis  = dict(title           = "Mean Red Intensity [0-255]",
                           side        = 'left',
                           tickfont    = dict(color='red'),
                           titlefont   = dict(color='red'),
                           showgrid    = False,
                           range       = [red_min, red_max]),
-        yaxis2 = dict(title       = "Loudness [sones]",
+        yaxis2 = dict(title           = "Loudness [sones]",
                           overlaying  = 'y', 
                           side        = 'right',
                           tickfont    = dict(color='blue'),
@@ -246,11 +248,19 @@ def plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_p
     # Display the plot
     fig.show()
 
-def compute_distance(flash_time, boom_time, temperature=20., frame_rate=25.):
+def compute_distance(flash_time, boom_time, temperature, frame_rate):
     """Compute distance from sound delay"""
-    
+
+    # Set input defaults
+    if temperature is None:
+        temperature = 20.
+    if frame_rate is None:
+        frame_rate = 25.
+
+    # Compute speed of sound
     speed_of_sound = 331. + 0.6*temperature
 
+    # Compute distance estimate and error bounds
     distance = ( boom_time - flash_time )*speed_of_sound
     error    = (0.5/frame_rate)*speed_of_sound
     
