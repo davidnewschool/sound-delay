@@ -101,49 +101,59 @@ def process_video(video_path):
         frame_index += 1
 
     cap.release()
-    # Commented out cv2.destroyAllWindows() as it's not needed and causes issues in Jupyter notebook.
-    # cv2.destroyAllWindows()
 
-
-    time_video = 0.04 * np.linspace(0., nframes, nframes, endpoint=False)
+    time_video = (1./frame_rate) * np.linspace(0., nframes, nframes, endpoint=False)
     return red_intensity, time_video
 
 def plot_signals(loudness, time_audio, red_intensity, time_video, video_path):
     """Plot the audio and video signals."""
-    # Rescale red intensity amplitude to match audio signal amplitude
-    red_intensity_normalized = red_intensity - np.min(red_intensity) + np.min(loudness)
-    red_intensity_normalized = red_intensity_normalized*np.max(loudness)/np.max(red_intensity_normalized)
-
-    # Get min and max of time axis
+    
+    # Get axis limits
     time_min = time_audio[0]
     time_max = time_audio[-1]
 
-    # Get min and max of
-    amp_min = np.min(red_intensity_normalized) - 0.1*( np.max(red_intensity_normalized) - np.min(red_intensity_normalized) )
-    amp_max = np.max(red_intensity_normalized) + 0.1*( np.max(red_intensity_normalized) - np.min(red_intensity_normalized) )
+    red_min = np.min(red_intensity) - 0.1*( np.max(red_intensity) - np.min(red_intensity) )
+    red_max = np.max(red_intensity) + 0.1*( np.max(red_intensity) - np.min(red_intensity) )
+
+    loud_min = np.min(loudness) - ( np.max(loudness) - np.min(loudness) ) \
+                                  * ( np.min(red_intensity) - red_min ) \
+                                  /( np.max(red_intensity) - np.min(red_intensity) )
+    loud_max = np.max(loudness) + ( np.max(loudness) - np.min(loudness) ) \
+                                  * ( red_max - np.max(red_intensity) ) \
+                                  /( np.max(red_intensity) - np.min(red_intensity) )
 
     # Plot
     fig = plt.figure()
-    ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-    ax.plot(time_audio, loudness, 'b-')
-    ax.plot(time_video, red_intensity_normalized, 'r-')
-    ax.legend(['loudness','red intensity'])
-    ax.set_xlim(time_min, time_max)
-    ax.set_ylim(amp_min, amp_max)
-    ax.set_yticks([])
-    ax.set_xlabel('Time [seconds]')
-    ax.set_ylabel('Amplitude')
-    plt.grid()
+    ax1 = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+    ax2 = ax1.twinx()
+    ax1.plot(time_video, red_intensity, 'r-')    
+    ax2.plot(time_audio, loudness, 'b-')
+
+    # Time Axis
+    ax1.set_xlim(time_min, time_max)
+    ax1.set_xlabel('Time [seconds]')
+    ax1.xaxis.grid(linestyle='--')
+
+    # Red intensity axis
+    ax1.set_ylim(red_min, red_max)
+    ax1.tick_params(axis='y', colors='red')    
+    ax1.set_ylabel('Mean Red Intensity [0-255]', color='red')
+
+    # Loudness axis
+    ax2.set_ylim(loud_min, loud_max)
+    ax2.tick_params(axis='y', colors='blue')
+    ax2.set_ylabel('Loudness [sones]', color='blue')
 
     # Save the plot to the same path/name as the input video
     output_image_path = os.path.splitext(video_path)[0] + '.png'
     plt.savefig(output_image_path)
 
-    # show the plot
+    # Show the plot
     plt.show()
 
 def main(video_path=None, audio_path=None):
     global loudness, time_audio, red_intensity, time_video
+    
     # If video_path is not given as argument, ask the user
     if not video_path:
         video_path = get_video_path()
