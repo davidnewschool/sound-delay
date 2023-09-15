@@ -152,7 +152,7 @@ def plot_signals_matplotlib(loudness, time_audio, red_intensity, time_video, vid
     """Plot the audio and video signals with Matplotlib."""
 
     # Get limits of plot axes
-    time_min, time_max, red_min, red_max, loud_min, loud_max = get_axis_limits(loudness, red_intensity)
+    time_min, time_max, red_min, red_max, loud_min, loud_max = get_axis_limits(time_video, loudness, red_intensity)
     
     # Plot
     fig = plt.figure()
@@ -192,7 +192,7 @@ def plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_p
     """Plot the audio and video signals with Plotly."""
     
     # Get limits of plot axes
-    time_min, time_max, red_min, red_max, loud_min, loud_max = get_axis_limits(loudness, red_intensity)
+    time_min, time_max, red_min, red_max, loud_min, loud_max = get_axis_limits(time_video, loudness, red_intensity)
     
     # Create a figure
     fig = go.Figure()
