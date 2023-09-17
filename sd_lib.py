@@ -5,7 +5,6 @@ from mosqito.utils import load
 from mosqito.sq_metrics import loudness_zwtv
 import cv2
 import plotly.graph_objects as go
-import requests
 from IPython.display import display, HTML
 
 try: 
@@ -20,31 +19,6 @@ red_intensity = None
 time_video = None
 frame_rate = None
 audio_path = None
-
-def download_mp4(url, filename=None):
-    """Download mp4 file from URL"""
-
-    # Default filename to 'video.mp4'
-    if filename is None:
-        filename = 'video.mp4'
-    
-    # Send HTTP request for file
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            filename = 'video.mp4'
-        else:
-            print(f"Request failed with status code {response.status_code}")
-            return None
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return None
-        
-    # Write file to disk
-    with open(filename, 'wb') as f:
-        f.write(response.content)
-
-    return True
 
 def extract_audio_from_video(video_path):
     """Extract audio from the video."""
@@ -211,14 +185,14 @@ def plot_signals_plotly(loudness, time_audio, red_intensity, time_video, video_p
                           side        = 'left',
                           tickfont    = dict(color='red'),
                           titlefont   = dict(color='red'),
-                          showgrid    = False,
+                          showgrid    = True,
                           range       = [red_min, red_max]),
         yaxis2 = dict(title           = "Loudness [sones]",
                           overlaying  = 'y', 
                           side        = 'right',
                           tickfont    = dict(color='blue'),
                           titlefont   = dict(color='blue'),
-                          showgrid    = False,
+                          showgrid    = True,
                            range       = [loud_min, loud_max]),
         showlegend = False,
         title      = "Comparison of Loudness and Red Intensity over Time"
