@@ -18,7 +18,7 @@ def main(input_path=None, output_path=None):
     if output_path is None:
         # Generate the output path with a "-cut" suffix
         foo = os.path.splitext(input_path)
-        output_path = foo[0] + '-cut' + foo[1]
+        output_path = foo[0] + '-trimmed' + foo[1]
         
     # Load the video clip
     video_clip = VideoFileClip(input_path)
@@ -39,6 +39,8 @@ def main(input_path=None, output_path=None):
     
     # Close the original video clip
     video_clip.close()
+
+    print("Video trimming complete. Saved as " +  output_path)
     
 if __name__ == "__main__":
     
